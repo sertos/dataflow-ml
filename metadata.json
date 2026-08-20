@@ -1,0 +1,11 @@
+{
+  "id": "dataflow-ml",
+  "name": "Solvra DataFlow ML",
+  "category": "Ingeniería de Datos",
+  "description": "Solvra DataFlow ML es una plataforma SaaS impulsada por inteligencia artificial que permite limpiar, procesar y analizar archivos Excel y CSV automáticamente. La aplicación detecta duplicados, valores faltantes, errores de formato y genera insights inteligentes, dashboards visuales y reportes ejecutivos en segundos.\n\nDiseñada para empresas, analistas y equipos operativos, la plataforma simplifica tareas complejas de análisis de datos mediante una experiencia moderna, intuitiva y profesional.\n\nFunciones principales:\n- Carga de archivos Excel y CSV.\n- Limpieza automática de datos con IA.\n- Detección de duplicados y errores.\n- Generación automática de insights.\n- Dashboards interactivos.\n- Exportación de datos limpios y reportes PDF.\n\nBeneficios:\n- Reduce trabajo manual.\n- Mejora la calidad de los datos.\n- Acelera la toma de decisiones.\n- Automatiza procesos repetitivos de análisis.",
+  "downloads": 11,
+  "rating": 5,
+  "reviews": 8,
+  "images": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg"],
+  "type": "saas"
+}
