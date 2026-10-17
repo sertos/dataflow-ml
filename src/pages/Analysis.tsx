@@ -11,16 +11,44 @@ export default function Analysis() {
   const [aiChat, setAiChat] = useState<{role: 'user' | 'ai', text: string}[]>([]);
   const [isAssisting, setIsAssisting] = useState(false);
 
-  const handleAskAi = () => {
+  const handleAskAi = async () => {
     if (!aiQuery.trim() || isAssisting) return;
-    const newChat: {role: 'user' | 'ai', text: string}[] = [...aiChat, { role: 'user', text: aiQuery }];
+    
+    const userMessage = aiQuery;
+    const newChat: {role: 'user' | 'ai', text: string}[] = [...aiChat, { role: 'user', text: userMessage }];
+    
     setAiChat(newChat);
     setAiQuery("");
     setIsAssisting(true);
-    setTimeout(() => {
-      setAiChat([...newChat, { role: 'ai', text: `Based on the current analysis, this dataset indicates standard patterns with a few minor outliers that I've flagged in your insights.` }]);
+
+    try {
+      // Enviamos un máximo de 100 filas de contexto para evitar payloads demasiado grandes
+      const contextData = uploadedData ? uploadedData.data.slice(0, 100) : null;
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: userMessage,
+          datasetContext: contextData
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error de conexión con la IA");
+      }
+
+      // Agregamos la respuesta real de Gemini al chat
+      setAiChat([...newChat, { role: 'ai', text: data.reply }]);
+      
+    } catch (error) {
+      console.error("Error fetching AI:", error);
+      setAiChat([...newChat, { role: 'ai', text: "Hubo un error de conexión con el servidor. Por favor, reintenta en unos instantes." }]);
+    } finally {
       setIsAssisting(false);
-    }, 1500);
+    }
   };
 
   const handleExport = () => {
@@ -106,7 +134,7 @@ export default function Analysis() {
                     <div className="text-slate-500 text-center text-xs py-2 italic">How can I help you understand this data?</div>
                   )}
                   {aiChat.map((msg, i) => (
-                    <div key={i} className={`p-3 rounded-lg max-w-[90%] ${msg.role === 'user' ? 'bg-primary/20 text-slate-800 dark:text-slate-200 self-end ml-auto' : 'bg-slate-200 dark:bg-white/10 text-slate-800 dark:text-slate-200 self-start mr-auto'}`}>
+                    <div key={i} className={`p-3 rounded-lg max-w-[90%] ${msg.role === 'user' ? 'bg-primary/20 text-slate-800 dark:text-slate-200 self-end ml-auto' : 'bg-slate-200 dark:bg-white/10 text-slate-800 dark:text-slate-200 self-start mr-auto whitespace-pre-wrap'}`}>
                       {msg.text}
                     </div>
                   ))}
